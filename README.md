@@ -32,7 +32,7 @@ Define a schedule with locations and timestamps:
 schedule = [(longitude1, latitude1, timestamp1), (longitude2, latitude2, timestamp2), ...]
 route_plan = RoutePlan(schedule, line_string)
 ```
-##Predicting Schedule Times
+Predicting Schedule Times
 To predict schedule times based on a trip's reported timestamps:
 ```python
 trip = [(longitude1, latitude1, timestamp1), (longitude2, latitude2, timestamp2), ...]
@@ -40,5 +40,6 @@ trip_plan = RoutePlan(trip, line_string)
 predictor = TimeStampPredictor(route_plan, trip_plan)
 predicted_schedule = predictor.predict_schedule_by_trip()
 ```
-
+## License
+MIT License
 
