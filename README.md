@@ -41,5 +41,5 @@ predictor = TimeStampPredictor(route_plan, trip_plan)
 predicted_schedule = predictor.predict_schedule_by_trip()
 ```
 ## License
-MIT License
+This module is licensed under the MIT License - see the LICENSE file for details.
 
