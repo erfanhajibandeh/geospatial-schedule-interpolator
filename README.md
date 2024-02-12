@@ -18,30 +18,28 @@ This command will install all necessary libraries, including Shapely, GeoPy, Pan
 First, import the module in your Python script:
 
 ```python
-from src.lstspred import LineStringConstructor
-from src.lstspred import RoutePlan
-from src.lstspred import TimeStampPredictor
-
+from src.lstspred import LineStringConstructor, RoutePlan, TimeStampPredictor
+```
 ##Defining a Line String
 Create a line string by providing an ordered list of tuples, each representing a location's longitude and latitude:
-
+```python
 locations = [(longitude1, latitude1), (longitude2, latitude2), ...]
 line_string = LineStringConstructor(locations)
-
+```
 ##Creating a Schedule
 Define a schedule with locations and timestamps:
-
+```python
 schedule = [(longitude1, latitude1, timestamp1), (longitude2, latitude2, timestamp2), ...]
 route_plan = RoutePlan(schedule, line_string)
-
+```
 ##Predicting Schedule Times
 To predict schedule times based on a trip's reported timestamps:
-
+```python
 trip = [(longitude1, latitude1, timestamp1), (longitude2, latitude2, timestamp2), ...]
 trip_plan = RoutePlan(trip, line_string)
 predictor = TimeStampPredictor(route_plan, trip_plan)
 predicted_schedule = predictor.predict_schedule_by_trip()
-
+```
 ##Contributing
 
 Contributions to this project are welcome! If you have suggestions for improvements or encounter any issues, please feel free to open an issue or submit a pull request.
