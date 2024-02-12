@@ -119,6 +119,7 @@ class RoutePlan:
 
         Parameters:
             points (list of tuples): A list of geotagged points (longitude, latitude, timestamp).
+            The coordinates should be float and the timestamp should be in epoch style and float. 
             line_string_object (LineStringConstructor, optional): An instance of LineStringConstructor.
 
         Raises:
@@ -202,12 +203,12 @@ class TimeStampPredictor:
         
     def predict_schedule_by_trip(self):
         """
-        Predicts timestamps for the trip's geotagged points by interpolating from the schedule's geotagged timestamps.
+        Predicts timestamps for the trip's geotagged points by interpolating from the schedule's geotagged epoch timestamps.
         This method uses a weighted interpolation mechanism based on distances traveled along a line string.
 
         The prediction process involves several steps:
         1. Merging the schedule and trip dataframes, sorted by the distance traveled.
-        2. Calculating the 'inverse_speed' between consecutive schedule points as the ratio of time difference to distance traveled.
+        2. Calculating the 'inverse_speed' between consecutive schedule points as the ratio of time difference (epoch difference) to distance traveled.
         3. Forward filling the 'inverse_speed' to apply it for interpolation between known schedule timestamps.
         4. Interpolating timestamps for trip points based on the weighted duration between the closest known schedule timestamps.
         5. Handling edge cases where trip points fall outside the range of the schedule points.
