@@ -15,15 +15,15 @@ Trip points, which may not lie directly on the LineString, are projected onto it
 ![Trip Points](images/Trip_Point_Projection1.png)
 ![Trip Point Projection](images/Trip_Point_Projection2.png)
 
-We calculate the cumulative distance from the start of the LineString to each projected point. This distance measurement is crucial for timestamp interpolation. Of note, you may need to denoise your data for unwanted trip timestamps such as the beginning of the trip shown below.
+We calculate the cumulative distance from the start of the LineString to each projected point. This distance measurement is crucial for timestamp interpolation. Of note, you may need to denoise your data for unwanted trip timestamps such as the beginning of the trip shown below. Also, ensure to convert your timestamps to epoch.
 
 ![Distance Calculation](images/Distance_Calculation.png)
 
-Timestamps for trip points are estimated using a weighted interpolation method based on their calculated distances along the LineString. Given the nearest two trip known timestamps T1 and T2 at distances D1 and D2 , and a point at distance Dp', the timestamp is interpolated as follows:
+Timestamps for trip points are estimated using a weighted interpolation method based on their calculated distances along the LineString. Given the nearest two trip known timestamps ```T1``` and ```T2``` at distances ```D1``` and ```D2``` , and a point at distance ```Dp'```, the timestamp is interpolated as follows:
 
 ![Formula](images/Formula.png)
 
-This formula calculates Tp' by finding the proportion of the distance Dp' lies between D1 and D2 and applies that proportion to the time interval T2 - T1, adding the result to T1 to estimate the timestamp for P'. 
+This formula calculates ```Tp'``` by finding the proportion of the distance ```Dp'``` lies between ```D1``` and ```D2``` and applies that proportion to the time interval ```T2 - T1```, adding the result to ```T1``` to estimate the timestamp for P'. 
 
 Handling Edge Cases for Beginning and Ending Tails:
 
@@ -32,9 +32,9 @@ Ending Tail: Similarly, for points after the last known timestamp, extend the in
 
 The algorithm also returns three penalty factors inculding:
 
-'dist_to_closest_ts' : distance to the closest timestamp that was used for interpolation. The higher > less accuracy 
-'time_to_closest_ts' : time to the closest timestamp that was used for interpolation. The higher > less accuracy 
-'trip_to_schedule_ts_ratio' : ratio of the trip timestamps to the schedule timestamps. The higher > more accuracy 
+```'dist_to_closest_ts'``` : distance to the closest timestamp that was used for interpolation. The higher > less accuracy 
+```'time_to_closest_ts'``` : time to the closest timestamp that was used for interpolation. The higher > less accuracy 
+```'trip_to_schedule_ts_ratio'``` : ratio of the trip timestamps to the schedule timestamps. The higher > more accuracy 
 
 ## Installation
 
