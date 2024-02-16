@@ -15,7 +15,7 @@ Trip points, which may not lie directly on the LineString, are projected onto it
 ![Trip Points](images/Trip_Point_Projection1.png)
 ![Trip Point Projection](images/Trip_Point_Projection2.png)
 
-We calculate the cumulative distance from the start of the LineString to each projected point. This distance measurement is crucial for timestamp interpolation. Of note, you may need to denoise your data for unwanted trip timestamps such as the beginning of the trip shown below or intersection of looping segments. Also, ensure to convert your timestamps to epoch.
+We calculate the cumulative distance from the start of the LineString to each projected point. This distance measurement is crucial for timestamp interpolation. Of note, you may need to denoise your data for unwanted trip timestamps such as the beginning of the trip shown below. Also, ensure to convert your timestamps to epoch.
 
 ![Distance Calculation](images/Distance_Calculation.png)
 
