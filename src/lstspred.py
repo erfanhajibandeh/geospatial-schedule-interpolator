@@ -144,7 +144,7 @@ class RoutePlan:
         if points is None:
             points = []
         
-        if not self.validate_geotagged_timestamp(points):
+        if not self._validate_geotagged_timestamp(points):
             raise ValueError('Points must be a list of tuples (longitude, latitude, timestamp) with floats.')
 
         if line_string_object is not None and not isinstance(line_string_object, LineStringConstructor):
@@ -167,7 +167,7 @@ class RoutePlan:
 
         return schedule
     
-    def validate_geotagged_timestamp(self, schedule_points):
+    def _validate_geotagged_timestamp(self, schedule_points):
         """
         Validates the input list of geotagged points to ensure it meets the requirements for a schedule.
 
