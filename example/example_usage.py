@@ -33,6 +33,6 @@ predictor = TimeStampPredictor(my_schedule, my_trip)
 my_pred = predictor.predict_schedule_by_trip()
 
 # Save the prediction results to a CSV file
-my_pred.to_csv('examples/data/prediction_results.csv', index=False)
+my_pred.to_csv('data/prediction_results.csv', index=False)
 
 print("Prediction results have been saved to 'examples/data/prediction_results.csv'")

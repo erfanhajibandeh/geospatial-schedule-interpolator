@@ -34,44 +34,59 @@ class LineStringConstructor:
         
         self.points = points
         self.line_string = self._create_line_string()
-    
-    def point_to_line_projection(self, longitude, latitude):
+        
+    def project_and_calculate_distance(self, df):
         """
-        Projects a point onto the line string and calculates the distance along the line from the start.
+        Calculate distances along a line string for points in a grouped DataFrame.
+        This function iterates over each segment of the line string. For each segment, it checks if the projected point 
+        lies on that segment or is very close to it (within a threshold of 0.0001 units). If the projected point is on 
+        the segment or close enough, the function calculates the geodesic distance from the start of the line string to 
+        the projected point and breaks the loop. If the projected point is not on the segment, the function adds the 
+        geodesic distance of the segment to the total distance. The process continues until the segment containing the 
+        projected point is found or all segments are traversed.
 
-        Parameters:
-            longitude (float): The longitude of the point to project.
-            latitude (float): The latitude of the point to project.
+        :param group: DataFrame group for a single trip, sorted by occurrence.
+        :param line_string: LineString object for the trip.
 
-        Returns:
-            float: The distance along the line string to the projected point in kilometers.
+        :return: List of distances or None for each point in the group.
         """
-        point = Point(longitude, latitude)
-        projected_point = self.line_string.interpolate(self.line_string.project(point))
+        
+        last_segment_index = -1
+        cumulative_distance = 0.0 
+        distances = []
 
-        return self._calculate_distance_along_line(projected_point)
-    
-    def _calculate_distance_along_line(self, projected_point):
-        """
-        Calculates the total distance along the line string to a projected point.
+        for _, row in df.iterrows():
+            point = Point(row['longitude'], row['latitude'])
+            projected_point = self.line_string.interpolate(self.line_string.project(point))
+            point_found = False
 
-        Parameters:
-            projected_point (Point): The projected point on the line string.
 
-        Returns:
-            float: The distance in kilometers to the projected point along the line string.
-        """
-        total_distance = 0.0
-        for i in range(len(self.line_string.coords) - 1):
-            segment = LineString([self.line_string.coords[i], self.line_string.coords[i + 1]])
-            if segment.contains(projected_point) or segment.distance(projected_point) < 0.0001:
-                total_distance += geodesic((self.line_string.coords[i][1], self.line_string.coords[i][0]),
-                                           (projected_point.y, projected_point.x)).kilometers
-                break
-            else:
-                total_distance += geodesic((self.line_string.coords[i][1], self.line_string.coords[i][0]),
-                                           (self.line_string.coords[i + 1][1], self.line_string.coords[i + 1][0])).kilometers
-        return total_distance
+            for i in range(last_segment_index + 1, len(self.line_string.coords) - 1):
+                segment = LineString([self.line_string.coords[i], self.line_string.coords[i + 1]])
+                
+                # Check if point is on the segment, if yes calculate distance to the point
+                if segment.contains(projected_point) or segment.distance(projected_point) < 0.0001:  
+                    if i > 0 and last_segment_index < i:
+                        #calculate distance to the segment
+                        for j in range(last_segment_index + 1, i):
+                            cumulative_distance += geodesic(self.line_string.coords[j][::-1], self.line_string.coords[j + 1][::-1]).kilometers
+
+                    last_segment_index = i
+                    #calculate distance in the segment to the point
+                    segment_start_to_point_distance = geodesic(self.line_string.coords[i][::-1], (projected_point.y, projected_point.x)).kilometers
+                    total_distance = cumulative_distance + segment_start_to_point_distance
+                    #record the distance and skip the previous segments for the next point - this is to improve seatch efficiency
+                    distances.append(total_distance)
+                    point_found = True
+                    #calculate total distance to the point
+                    cumulative_distance += geodesic(self.line_string.coords[i][::-1], self.line_string.coords[i + 1][::-1]).kilometers
+                    break
+                
+            # Point did not project onto the line string correctly mainly because the point is near where the line string intersects iteself or there are overlaping parts
+            if not point_found:
+                distances.append(None)  
+
+        return pd.Series(distances)
 
     def _create_line_string(self):
         """
@@ -115,7 +130,7 @@ class RoutePlan:
     
     def __init__(self, points=None, line_string_object=None):
         """
-        Initializes the RoutePlan with geotagged points and an optional line string object.
+        Initializes the RoutePlan with geotagged points and a line string object.
 
         Parameters:
             points (list of tuples): A list of geotagged points (longitude, latitude, timestamp).
@@ -148,7 +163,8 @@ class RoutePlan:
         """
         schedule = pd.DataFrame(self.points, columns=['longitude', 'latitude', 'timestamp'])
         schedule = schedule.sort_values(by=['timestamp'], ascending=True)
-        schedule['distance_traveled'] = schedule.apply(lambda x: self.line_string.point_to_line_projection(x['longitude'], x['latitude']), axis=1)
+        schedule['distance_traveled'] = self.line_string.project_and_calculate_distance(df=schedule)
+
         return schedule
     
     def validate_geotagged_timestamp(self, schedule_points):
@@ -221,6 +237,7 @@ class TimeStampPredictor:
         """  
         
         predict_df = self.schedule.reset_index(drop=False)
+        predict_df = predict_df[~predict_df['distance_traveled'].isna()]
         predict_df.rename(columns = {'timestamp':'schedule_timestamp'},inplace=True)
         predict_df['inverse_speed'] = predict_df['schedule_timestamp'].diff(1).shift(-1) / predict_df['distance_traveled'].diff(1).shift(-1)
         predict_df = pd.concat([predict_df,self.trip],axis=0).sort_values(by='distance_traveled',kind='mergesort').reset_index(drop=True)
