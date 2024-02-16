@@ -1,4 +1,4 @@
-# GeoSpatial Schedule Interpolator 
+# GeoSpatial Schedule Interpolator
 
 ## Overview
 
@@ -23,7 +23,7 @@ Timestamps for trip points are estimated using a weighted interpolation method b
 
 ![Formula](images/Formula.png)
 
-This formula calculates ```Tp'``` by finding the proportion of the distance ```Dp'``` lies between ```D1``` and ```D2``` and applies that proportion to the time interval ```T2 - T1```, adding the result to ```T1``` to estimate the timestamp for P'. 
+This formula calculates ```Tp'``` by finding the proportion of the distance ```Dp'``` lies between ```D1``` and ```D2``` and applies that proportion to the time interval ```T2 - T1```, adding the result to ```T1``` to estimate the timestamp for P'.
 
 Handling Edge Cases for Beginning and Ending Tails:
 
@@ -32,16 +32,15 @@ Ending Tail: Similarly, for points after the last known timestamp, extend the in
 
 The algorithm also returns three penalty factors inculding:
 
-```'dist_to_closest_ts'``` : distance to the closest timestamp that was used for interpolation. The higher > less accuracy 
-```'time_to_closest_ts'``` : time to the closest timestamp that was used for interpolation. The higher > less accuracy 
-```'trip_to_schedule_ts_ratio'``` : ratio of the trip timestamps to the schedule timestamps. The higher > more accuracy 
+```'dist_to_closest_ts'``` : distance to the closest timestamp that was used for interpolation. The higher > less accuracy
+```'time_to_closest_ts'``` : time to the closest timestamp that was used for interpolation. The higher > less accuracy
+```'trip_to_schedule_ts_ratio'``` : ratio of the trip timestamps to the schedule timestamps. The higher > more accuracy
 
 ## Installation
 
 This project is implemented in Python, leveraging Shapely for geometric calculations and Pandas for data management. It focuses on accurate geometric projections and effective temporal interpolation. To use this project, you'll need Python installed on your system. This project has been tested with Python 3.8+, but it may work with other versions. You can install the required dependencies with pip:
 
 pip install -r requirements.txt
-
 
 This command will install all necessary libraries, including Shapely, GeoPy, Pandas, and NumPy, as specified in the `requirements.txt` file.
 
@@ -52,26 +51,33 @@ First, import the module in your Python script:
 ```python
 from src.lstspred import LineStringConstructor, RoutePlan, TimeStampPredictor
 ```
+
 Defining a Line String
 Create a line string by providing an ordered list of tuples, each representing a location's longitude and latitude:
+
 ```python
 locations = [(longitude1, latitude1), (longitude2, latitude2), ...]
 line_string = LineStringConstructor(locations)
 ```
+
 Creating a Schedule
 Define a schedule with locations and timestamps:
+
 ```python
 schedule = [(longitude1, latitude1, timestamp1), (longitude2, latitude2, timestamp2), ...]
 route_plan = RoutePlan(schedule, line_string)
 ```
+
 Predicting Schedule Times
 To predict schedule times based on a trip's reported timestamps:
+
 ```python
 trip = [(longitude1, latitude1, timestamp1), (longitude2, latitude2, timestamp2), ...]
 trip_plan = RoutePlan(trip, line_string)
 predictor = TimeStampPredictor(route_plan, trip_plan)
 predicted_schedule = predictor.predict_schedule_by_trip()
 ```
-## License
-This module is licensed under the MIT License - see the LICENSE file for details.
 
+## License
+
+This module is licensed under the MIT License - see the LICENSE file for details.
