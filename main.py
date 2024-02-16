@@ -1,7 +1,6 @@
 # Import necessary modules
-from lstspred import LineStringConstructor, RoutePlan, TimeStampPredictor
+from src.lstspred import LineStringConstructor, RoutePlan, TimeStampPredictor
 import csv
-import pandas as pd 
 
 # Function to load data from CSV
 def load_csv_data(filename):
@@ -15,9 +14,9 @@ def load_csv_data(filename):
             return [(float(row.get('longitude')), float(row.get('latitude'))) for row in reader]
 
 # Load shape, schedule, and trip data from CSV files
-shape = load_csv_data('data/shape.csv')
-schedule = load_csv_data('data/schedule.csv')
-trip = load_csv_data('data/trip.csv')
+shape = load_csv_data('example/data/shape.csv')
+schedule = load_csv_data('example/data/schedule.csv')
+trip = load_csv_data('example/data/trip.csv')
 
 # Create a LineStringConstructor object with the shape data
 my_line = LineStringConstructor(shape)
@@ -33,6 +32,6 @@ predictor = TimeStampPredictor(my_schedule, my_trip)
 my_pred = predictor.predict_schedule_by_trip()
 
 # Save the prediction results to a CSV file
-my_pred.to_csv('data/prediction_results.csv', index=False)
+my_pred.to_csv('example/data/prediction_results.csv', index=False)
 
 print("Prediction results have been saved to 'examples/data/prediction_results.csv'")
