@@ -24,15 +24,22 @@ Timestamps for trip points are estimated using a weighted interpolation method b
 ![Formula](images/Formula.png)
 
 Where: 
-```T predicted```: The time at which you predict you will reach the current distance 
+```T predicted```: The time at which you predict you will reach the current distance.
+
 ```T prev```:  The last known timestamp.
-```T2−T1```: The time duration between two known timestamps, which is used as a scaling factor for the weighted duration 
+
+```T2−T1```: The time duration between two known timestamps, which is used as a scaling factor for the weighted duration.
+
 ```Wi```: Represents the weighted impact of the current segment's pace relative to the sum of the remaining segments' paces, taking into account their distances. It's the ratio of the current segment's scheduled pace to the cumulative pace of all remaining segments, each multiplied by their respective distances. This factor adjusts the prediction to account for changing conditions over the course of the journey.
 
 ```P prev to current```: The pace for the most recent segment for which you have both distance and known or predicted time data.
+
 ```D current−D prev```: The incremental distance for which you want to predict the time of arrival.
+
 ```ΔDi```: The difference in distance for the ```ith``` segment of the remaining prediction points.
+
 ```Pi```: The schedule pace for the ```ith``` segment, which could be different for each segment n.
+
 ```n```: The number of remaining points for which you want to predict the time, including the current segment + 1.
 
 Handling Edge Cases for Beginning and Ending Tails:
@@ -42,8 +49,10 @@ Ending Tail: Similarly, for points after the last known timestamp, extend the in
 
 The algorithm also returns three penalty factors inculding:
 
-```'dist_to_closest_ts'``` : distance to the closest timestamp that was used for interpolation. The higher > less accuracy
-```'time_to_closest_ts'``` : time to the closest timestamp that was used for interpolation. The higher > less accuracy
+```'dist_to_closest_ts'``` : distance to the closest timestamp that was used for interpolation. The higher > less accuracy.
+
+```'time_to_closest_ts'``` : time to the closest timestamp that was used for interpolation. The higher > less accuracy.
+
 ```'trip_to_schedule_ts_ratio'``` : ratio of the trip timestamps to the schedule timestamps. The higher > more accuracy
 
 ## Installation
