@@ -19,11 +19,21 @@ We calculate the cumulative distance from the start of the LineString to each pr
 
 ![Distance Calculation](images/Distance_Calculation.png)
 
-Timestamps for trip points are estimated using a weighted interpolation method based on their calculated distances along the LineString. Given the nearest two trip known timestamps ```T1``` and ```T2``` at distances ```D1``` and ```D2``` , and a point at distance ```Dp'```, the timestamp is interpolated as follows:
+Timestamps for trip points are estimated using a weighted interpolation method based on their calculated distances along the LineString. Given the nearest two trip known timestamps ```T1``` and ```T2``` at distances ```D1``` and ```D2``` , and a point between them, the timestamp is interpolated as follows:
 
 ![Formula](images/Formula.png)
 
-This formula calculates ```Tp'``` by finding the proportion of the distance ```Dp'``` lies between ```D1``` and ```D2``` and applies that proportion to the time interval ```T2 - T1```, adding the result to ```T1``` to estimate the timestamp for P'.
+Where: 
+```T predicted```: The time at which you predict you will reach the current distance 
+```T prev```:  The last known timestamp.
+```T2−T1```: The time duration between two known timestamps, which is used as a scaling factor for the weighted duration 
+```Wi```: Represents the weighted impact of the current segment's pace relative to the sum of the remaining segments' paces, taking into account their distances. It's the ratio of the current segment's scheduled pace to the cumulative pace of all remaining segments, each multiplied by their respective distances. This factor adjusts the prediction to account for changing conditions over the course of the journey.
+
+```P prev to current```: The pace for the most recent segment for which you have both distance and known or predicted time data.
+```D current−D prev```: The incremental distance for which you want to predict the time of arrival.
+```ΔDi```: The difference in distance for the ```ith``` segment of the remaining prediction points.
+```Pi```: The schedule pace for the ```ith``` segment, which could be different for each segment n.
+```n```: The number of remaining points for which you want to predict the time, including the current segment + 1.
 
 Handling Edge Cases for Beginning and Ending Tails:
 
