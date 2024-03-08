@@ -1,4 +1,5 @@
-shapely>=1.7.1
-geopy>=2.0.0
-pandas>=1.1.5
-numpy>=1.19.5
+python==3.12
+shapely==1.7.1
+geopy==2.0.0
+pandas==1.1.5
+numpy>==1.19.5
