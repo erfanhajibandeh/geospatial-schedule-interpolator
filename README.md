@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project provides a simple Python algorithm designed for analyzing and predicting schedules for delivery or transportation routes with fixed stops that does NOT include a looping segment. By accepting an ordered tuple of locations to define a line string, the module can process schedules and predict schedule times for specific locations based on weighted interpolation of reported timestamps along that line string. It is particularly useful for applications in delivery services, public transportation, and any scenario involving fixed routes and schedules.
+This project provides a simple Python algorithm designed for analyzing and predicting schedules for delivery or transportation routes with fixed stops. By accepting an ordered tuple of locations to define a line string, the module can process schedules and predict schedule times for specific locations based on weighted interpolation of reported timestamps along that line string. It is particularly useful for applications in delivery services, public transportation, and any scenario involving fixed routes and schedules.
 
 ## Steps
 
